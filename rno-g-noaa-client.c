@@ -219,7 +219,7 @@ int main(int nargs, char ** args)
     buf[n] = 0; //make sure string is zero terminated 
     if (opts.verbose) 
     {
-      printf("From [%s:%d]:: %s\n", inet_ntoa(addr.sin_addr ), ntohs(addr.sin_port),  buf); 
+      printf("From [%s:%d]::%s%s", inet_ntoa(addr.sin_addr ), ntohs(addr.sin_port),  buf, buf[n-1] == '\n' ?"" : "\n"); 
     }
              
 
@@ -233,6 +233,14 @@ int main(int nargs, char ** args)
     sscanf(comma+1, "%f,%f,%f,%f,%f,%f", 
                   &w.wind_spd, &w.wind_dir, &w.gust_spd,
                   &w.pressure, &w.temperature, &w.dewpoint); 
+
+    if(opts.verbose)
+    {
+      char whenbuf[24]; 
+      strftime(whenbuf, sizeof(whenbuf), "%Y-%m-%d %H:%M:%SZ", &w.when);
+      printf("Parse Result: { when=\"%s\", wind_spd=%f, wind_dir=%f, gust_spd=%f, pressure=%f, temp=%f, dewpt =%f }\n", 
+          whenbuf, w.wind_spd, w.wind_dir, w.gust_spd, w.pressure, w.temperature, w.dewpoint);
+    }
 
 
     if (!opts.test) insert(&w); 

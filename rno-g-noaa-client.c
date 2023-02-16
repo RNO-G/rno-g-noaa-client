@@ -97,6 +97,31 @@ char buf[256];
 
 volatile int quit = 0; 
 
+void cleanup() 
+{
+  if (db) PQfinish(db); 
+  if (sock>0) close(sock); 
+}
+
+void fail() 
+{
+  cleanup(); 
+  exit(1); 
+}
+
+
+
+void prepare() 
+{
+    PGresult * res = PQprepare(db,  insert_stmt_name, insert_stmt,0,0); 
+    if (PQresultStatus(res) != PGRES_COMMAND_OK) 
+    {
+      fprintf(stderr,  "PREPARE failed %d: %s\n%s\n",PQresultStatus(res),PQresultErrorMessage(res), PQerrorMessage(db)); 
+      fail(); 
+    }
+    PQclear(res); 
+}
+
 void insert(struct weather_packet  *w) 
 {
   const char * dbvals[8]; 
@@ -136,7 +161,12 @@ void insert(struct weather_packet  *w)
     if (PQresultStatus(res) != PGRES_COMMAND_OK) 
     {
        fprintf(stderr, "exec failed %d: %s\n   %s\n", PQresultStatus(res), PQresultErrorMessage(res),PQerrorMessage(db)); 
-       PQreset(db); //try to reconnect 
+       PQreset(db); //try to reset
+       prepare(); //have to reprepare statement... 
+    }
+    else
+    {
+      nattempts = 3; // exit loop 
     }
     PQclear(res); 
   } while ( nattempts++ < 3); 
@@ -148,17 +178,7 @@ void sighandler(int signum)
   quit = signum; 
 }
 
-void cleanup() 
-{
-  if (db) PQfinish(db); 
-  if (sock>0) close(sock); 
-}
 
-void fail() 
-{
-  cleanup(); 
-  exit(1); 
-}
 
 int main(int nargs, char ** args) 
 {
@@ -178,13 +198,7 @@ int main(int nargs, char ** args)
       fprintf(stderr,"Failed to connect to db with conninfo=%s\n", opts.psql_conn_info); 
       return 1; 
     }
-    PGresult * res = PQprepare(db,  insert_stmt_name, insert_stmt,0,0); 
-    if (PQresultStatus(res) != PGRES_COMMAND_OK) 
-    {
-      fprintf(stderr,  "PREPARE failed %d: %s\n%s\n",PQresultStatus(res),PQresultErrorMessage(res), PQerrorMessage(db)); 
-      fail(); 
-    }
-    PQclear(res); 
+    prepare(); 
   }
 
   //open the socket 

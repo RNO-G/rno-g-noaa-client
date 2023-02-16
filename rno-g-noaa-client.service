@@ -5,7 +5,7 @@ After=postgresql.service
 [Service]
 User=met
 Group=met
-ExecStart=/home/met/rno-g-noaa-client/rno-g-noaa-client
+ExecStart=/home/met/rno-g-noaa-client/rno-g-noaa-client -v
 
 [Install]
 WantedBy=multi-user.target

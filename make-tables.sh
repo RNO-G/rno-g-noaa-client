@@ -23,6 +23,8 @@ temperature real not null,
 dewpoint real not null
 ); 
 
+CREATE INDEX obs_time_idx on obs using brin(obs_time); 
+
 E_O_SQL
 
 else

@@ -46,24 +46,24 @@ int parse_args(int nargs, char ** args)
     {
         opts.verbose =1;
     }
-    if (!strcmp("-t",args[iarg]))
+    else if (!strcmp("-t",args[iarg]))
     {
         opts.test =1;
     }
  
-    else if (!strcmp("-p",args[iarg++]))
+    else if (!strcmp("-p",args[iarg]))
     {
       int port = 0; 
-      if (iarg == nargs) 
+      if (++iarg == nargs) 
         return 1; 
       port = atoi (args[iarg]); 
       if (!port) 
         return 1; 
       opts.udp_port = port; 
     }
-    else if (!strcmp("-c", args[iarg++]))
+    else if (!strcmp("-c", args[iarg]))
     {
-      if (iarg == nargs) 
+      if (++iarg == nargs) 
         return 1; 
       opts.psql_conn_info = args[iarg]; 
     }

@@ -139,7 +139,7 @@ void insert(struct weather_packet  *w)
        PQreset(db); //try to reconnect 
     }
     PQclear(res); 
-  } while ( nattempts < 3); 
+  } while ( nattempts++ < 3); 
 
 }
 

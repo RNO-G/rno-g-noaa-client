@@ -236,10 +236,11 @@ int main(int nargs, char ** args)
 
     if(opts.verbose)
     {
-      char whenbuf[24]; 
+      char whenbuf[24], recvbuf[24]; 
       strftime(whenbuf, sizeof(whenbuf), "%Y-%m-%d %H:%M:%SZ", &w.when);
-      printf("Parse Result: { when=\"%s\", wind_spd=%f, wind_dir=%f, gust_spd=%f, pressure=%f, temp=%f, dewpt =%f }\n", 
-          whenbuf, w.wind_spd, w.wind_dir, w.gust_spd, w.pressure, w.temperature, w.dewpoint);
+      strftime(recvbuf, sizeof(recvbuf), "%Y-%m-%d %H:%M:%SZ", &w.recvd);
+      printf("  -->Parse Result: { when=\"%s\", recvd=\"%s\", wind_spd=%f, wind_dir=%f, gust_spd=%f, pressure=%f, temp=%f, dewpt =%f }\n", 
+          whenbuf, recvbuf, w.wind_spd, w.wind_dir, w.gust_spd, w.pressure, w.temperature, w.dewpoint);
     }
 
 

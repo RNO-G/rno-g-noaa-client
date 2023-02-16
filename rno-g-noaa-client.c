@@ -90,7 +90,7 @@ PGconn * db = NULL;
 const char * insert_stmt_name = "noaa-client"; 
 const char * insert_stmt = 
   "INSERT INTO obs (obs_time, insert_time, wind_speed, wind_dir, gust_speed, pressure, temperature, dewpoint)"
-  "VALUES ($1::integer, $2::integer, $3::real, $4::real, $5::real, $6::real, $7::real, $8::real)";  
+  "VALUES ($1::timestamp, $2::timestamp, $3::real, $4::real, $5::real, $6::real, $7::real, $8::real)";  
 
 int sock = 0; 
 char buf[256]; 

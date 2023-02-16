@@ -1,0 +1,11 @@
+[Unit] 
+Description="rno-g noaa ingress" 
+After=postgresql.service 
+
+[Service]
+User=met
+Group=met
+ExecStart=/home/met/rno-g-noaa-client/rno-g-noaa-client
+
+[Install]
+WantedBy=multi-user.target

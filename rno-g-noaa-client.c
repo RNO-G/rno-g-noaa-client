@@ -241,12 +241,25 @@ int main(int nargs, char ** args)
     struct weather_packet w= {.recvd = *gmtime(&now), .wind_spd = -999, .wind_dir = -999, .gust_spd = -999, .pressure = -999, .temperature = -999, .dewpoint = -999}; 
 
     char * comma = strchr(buf,','); 
-    *comma = 0; 
-    strptime(buf, "\"%Y-%m-%d %H:%M:%S\"", &w.when); 
+    if (!comma) 
+    {
+      fprintf(stderr,"no comma in received packet %s\n", buf ); 
+      continue; 
+    }
 
-    sscanf(comma+1, "%f,%f,%f,%f,%f,%f", 
+    *comma = 0; 
+    if (!strptime(buf, "\"%Y-%m-%d %H:%M:%S\"", &w.when))
+    {
+      fprintf(stderr,"Trouble parsing time %s\n", buf ); 
+      continue; 
+    }
+
+    if (6!=sscanf(comma+1, "%f,%f,%f,%f,%f,%f", 
                   &w.wind_spd, &w.wind_dir, &w.gust_spd,
-                  &w.pressure, &w.temperature, &w.dewpoint); 
+                  &w.pressure, &w.temperature, &w.dewpoint))
+    {
+      fprintf(stderr,"WARNING: Could not extract all values out of %s\n", comma+1); 
+    }
 
     if(opts.verbose)
     {

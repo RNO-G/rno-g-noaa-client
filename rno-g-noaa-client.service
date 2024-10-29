@@ -5,6 +5,7 @@ After=postgresql.service
 [Service]
 User=met
 Group=met
+Restart=always
 ExecStart=/home/met/rno-g-noaa-client/rno-g-noaa-client -v
 
 [Install]

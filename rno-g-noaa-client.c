@@ -10,6 +10,7 @@
 #include <unistd.h>
 #include <signal.h> 
 #include <arpa/inet.h> 
+#include <errno.h>
 #include <netinet/in.h> 
 
 static struct 
@@ -228,6 +229,11 @@ int main(int nargs, char ** args)
     int n = recvfrom(sock, buf, sizeof(buf), 0, (struct sockaddr*) &addr, &len); 
     if (quit) break; 
     if (!n) continue; //non-fatal signal? 
+    if (n < 0) 
+    {
+      fprintf(stderr,"Got %d from recvfrom\n", errno);
+      continue;
+    }
     time_t now = time(NULL); 
 
     buf[n] = 0; //make sure string is zero terminated 
